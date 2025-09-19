@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EaseNing Tools Chatbot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Chat Container */
+        .chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            max-height: 500px;
+            background-color: #1e2e24;
+            border: 1px solid #3a5545;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        /* Chat Header */
+        .chat-header {
+            background-color: #152420;
+            padding: 12px 15px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #3a5545;
+        }
+
+        .chat-header h2 {
+            font-size: 16px;
+            color: #d85a1b;
+        }
+
+        .chat-header button {
+            background: none;
+            border: none;
+            color: #e0e0e0;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .chat-header button:hover {
+            color: #d85a1b;
+        }
+
+        /* Chat Body */
+        .chat-body {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: #23382b;
+        }
+
+        .chat-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-body::-webkit-scrollbar-track {
+            background: #2d3e33;
+            border-radius: 3px;
+        }
+
+        .chat-body::-webkit-scrollbar-thumb {
+            background: #3a5545;
+            border-radius: 3px;
+        }
+
+        .chat-body::-webkit-scrollbar-thumb:hover {
+            background: #d85a1b;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background-color: #d85a1b;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 12px 12px 0 12px;
+            max-width: 80%;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background-color: #3a5545;
+            color: #e0e0e0;
+            padding: 8px 12px;
+            border-radius: 12px 12px 12px 0;
+            max-width: 80%;
+        }
+
+        .timestamp {
+            font-size: 10px;
+            color: #a5a5a5;
+            margin-top: 2px;
+        }
+
+        /* Chat Input */
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            background-color: #152420;
+            border-top: 1px solid #3a5545;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 8px;
+            background-color: #2d3e33;
+            border: 1px solid #3a5545;
+            border-radius: 4px;
+            color: #e0e0e0;
+            outline: none;
+        }
+
+        .chat-input button {
+            background-color: #d85a1b;
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .chat-input button:hover {
+            background-color: #b74a17;
+        }
+
+        /* Back Button */
+        .back-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #152420;
+            color: #d85a1b;
+            border: 1px solid #3a5545;
+            border-radius: 4px;
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .back-button:hover {
+            background-color: #2d3e33;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .chat-container {
+                width: 90%;
+                bottom: 10px;
+                right: 5%;
+            }
+
+            .chat-header h2 {
+                font-size: 14px;
+            }
+
+            .chat-input input {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .chat-container {
+                max-height: 80vh;
+            }
+
+            .chat-body {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back Button -->
+    <a href="https://hencheng2.github.io/all/" class="back-button">
+        <i class="fas fa-arrow-left"></i> Back
+    </a>
+
+    <!-- Chatbot Container -->
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>EaseNing Tools Assistant</h2>
+            <button onclick="toggleChat()"><i class="fas fa-minus"></i></button>
+        </div>
+        <div class="chat-body" id="chat-body">
+            <div class="message bot-message">
+                Welcome to EaseNing Tools! Ask about our tools, features, or contact details, and I'll help you out!
+                <div class="timestamp"></div>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Type your question..." onkeypress="if(event.key === 'Enter') sendMessage()">
+            <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script>
+        // Simulated README content as a structured object for keyword matching
+        const readmeData = {
+            "EaseNing Tools Website": {
+                overview: "The EaseNing Tools website showcases IT solutions and development tools created by Sir Henry, an IT professional specializing in web development and coding solutions.",
+                features: [
+                    "Responsive Design: Optimized for desktop, tablet, and mobile devices with media queries.",
+                    "Navigation: Fixed header with a responsive navigation menu, including a mobile-friendly hamburger menu.",
+                    "Hero Section: Displays a profile image and introduction for Sir Henry.",
+                    "Services Section: Showcases tools like HTML Code Viewer, Web IDE, Python Skills, and more.",
+                    "About Section: Provides information about EaseNing Tools and its mission.",
+                    "Contact Section: Includes contact details (phone, WhatsApp, email: hochieng86@gmail.com, location) and a contact form.",
+                    "Footer: Contains social media links and copyright information.",
+                    "Smooth Scrolling: Implemented for navigation links using JavaScript."
+                ],
+                technologies: ["HTML5", "CSS3 (Grid, Flexbox, media queries)", "JavaScript", "Font Awesome"],
+                notes: "Some services are under construction. The contact form requires a backend for submission.",
+                author: "Sir Henry, Contact: hochieng86@gmail.com",
+                license: "© 2023 EaseNing Tools. All rights reserved."
+            },
+            "Code Preview Tool": {
+                overview: "A web-based application to write, preview, and manipulate HTML, CSS, and JavaScript code in real-time with a responsive preview window.",
+                features: [
+                    "Real-Time Preview: Displays HTML, CSS, and JavaScript output in an iframe.",
+                    "Device Simulation: Preview in Phone (360x640px), Tablet (768x1024px), Laptop (1366x768px).",
+                    "Code Editor: Textareas for HTML, CSS, JavaScript with Clear, Paste, Copy, Distinguish, Merge, and Upload functionalities.",
+                    "Back Button: Links to https://hencheng2.github.io/all/.",
+                    "Responsive Design: Adapts to mobile and desktop with a dark theme."
+                ],
+                technologies: ["HTML5", "CSS3 (Flexbox)", "JavaScript (Clipboard API, FileReader API)"],
+                notes: "No external dependencies. File uploads limited to .html/.htm. Optimized for modern browsers.",
+                author: "Sir Henry, Contact: hochieng86@gmail.com",
+                license: "© 2023 EaseNing Tools. All rights reserved."
+            },
+            "Web IDE": {
+                overview: "A browser-based IDE for creating, editing, and executing web applications using HTML, CSS, JavaScript, and Python.",
+                features: [
+                    "Code Editor: CodeMirror with syntax highlighting for HTML, CSS, JavaScript, Python, using Dracula theme.",
+                    "File Management: Create, upload, delete, and switch files; persist in localStorage.",
+                    "Live Preview: Renders HTML, CSS, JavaScript in an iframe.",
+                    "Python Execution: Uses Pyodide to run Python code with dependency support via requirements.txt.",
+                    "Console: Displays Python output and errors.",
+                    "Project Import/Export: Export as ZIP using JSZip; import from ZIP.",
+                    "Back Button: Links to https://hencheng2.github.io/all/.",
+                    "Responsive Design: Resizable panels for sidebar, editor, and preview."
+                ],
+                technologies: ["HTML5", "CSS3 (Flexbox)", "JavaScript", "CodeMirror", "Pyodide", "JSZip", "FileSaver.js", "Font Awesome"],
+                notes: "Python execution limited to Pyodide-supported packages. Client-side processing only.",
+                author: "Sir Henry, Contact: hochieng86@gmail.com",
+                license: "© 2023 EaseNing Tools. All rights reserved."
+            },
+            "Python Skills": {
+                overview: "An interactive learning environment for Python programming with a code editor, real-time execution, and educational resources.",
+                features: [
+                    "Code Editor: Monaco Editor with Python syntax highlighting.",
+                    "Real-Time Execution: Uses Skulpt to run Python code in the browser.",
+                    "Learning Resources: Covers Python Basics, Data Structures, Loops, Functions, OOP, Modules, File Handling, Error Handling, Advanced Topics, Libraries.",
+                    "Interactive Examples: Load predefined code snippets into the editor.",
+                    "Console: Displays Python output and errors.",
+                    "Resource Selector: Dropdown for navigating topics.",
+                    "Back Button: Links to https://hencheng2.github.io/all/.",
+                    "Responsive Design: Grid layout adapts to screen sizes."
+                ],
+                technologies: ["HTML5", "CSS3 (Grid, Flexbox)", "JavaScript", "Monaco Editor", "Skulpt", "Font Awesome"],
+                notes: "Skulpt supports a subset of Python 3; limited file handling and library support.",
+                author: "Sir Henry, Contact: hochieng86@gmail.com",
+                license: "© 2023 EaseNing Tools. All rights reserved."
+            },
+            "Web Terminal": {
+                overview: "A browser-based terminal emulator simulating a Unix-like command-line interface for educational purposes.",
+                features: [
+                    "Terminal Interface: Dark-themed with a command-line prompt (user@terminal:~$).",
+                    "Command Support: help, clear, ls, pwd, whoami, date, echo, cat, cd, mkdir, rmdir, touch, rm, cp, mv.",
+                    "File System Simulation: In-memory hierarchical file system.",
+                    "Command History: Navigate with up/down arrow keys.",
+                    "Multi-Line Input: Supports Shift+Enter for multi-line commands.",
+                    "Autocomplete: Tab for command completion.",
+                    "Back Button: Links to https://hencheng2.github.io/all/.",
+                    "Responsive Design: Adapts to mobile and desktop."
+                ],
+                technologies: ["HTML5", "CSS3 (Flexbox)", "JavaScript", "Font Awesome"],
+                notes: "File system is in-memory and resets on refresh. Limited command set for educational purposes.",
+                author: "Sir Henry, Contact: hochieng86@gmail.com",
+                license: "© 2023 EaseNing Tools. All rights reserved."
+            },
+            "Excel - Spreadsheet": {
+                overview: "A browser-based spreadsheet tool mimicking Microsoft Excel with cell editing, formatting, and file operations.",
+                features: [
+                    "Spreadsheet Grid: 500x500 cells with row/column headers, single/range/row/column selection.",
+                    "Cell Editing: Content-editable cells with a formula bar.",
+                    "Menu Bar: File, Home, Insert, Formulas, Data, Help menus.",
+                    "Toolbar: Formatting (font, size, bold, italic, underline, alignment), number formats, functions.",
+                    "File Operations: New, Open (.xlsx, .csv, .txt, .ods), Save/Save As, Export, Print.",
+                    "Clipboard: Cut, copy, paste for cells.",
+                    "Formulas: Supports SUM, AVERAGE, COUNT, MAX, MIN (placeholder templates).",
+                    "Back Button: Links to https://hencheng2.github.io/all/.",
+                    "Responsive Design: Adapts to mobile and desktop."
+                ],
+                technologies: ["HTML5", "CSS3 (Flexbox, media queries)", "JavaScript", "Font Awesome"],
+                notes: "Simplified file handling; no actual formula calculations. Optimized for modern browsers.",
+                author: "Sir Henry, Contact: hochieng86@gmail.com",
+                license: "© 2023 EaseNing Tools. All rights reserved."
+            },
+            "Word - Professional Document Editor": {
+                overview: "A browser-based text editor emulating Microsoft Word with rich text editing and file operations.",
+                features: [
+                    "Document Editor: Multi-page A4-sized editor with contenteditable divs.",
+                    "Text Formatting: Font family, size, bold, italic, underline, alignment, lists, indentation, colors.",
+                    "Clipboard: Cut, copy, paste using document.execCommand.",
+                    "Undo/Redo: History stack for changes.",
+                    "Page Management: Auto-adds pages; supports cover pages, blank pages, page breaks.",
+                    "Insert Options: Tables (10x10 grid), images (base64), comments, headers/footers (placeholders).",
+                    "File Operations: New, Open (.txt, .html, etc.), Save/Save As (.docx, .pdf, .txt, etc.), Print.",
+                    "Back Button: Links to https://hencheng2.github.io/all/.",
+                    "Responsive Design: Adapts to mobile and desktop."
+                ],
+                technologies: ["HTML5", "CSS3 (Flexbox, media queries)", "JavaScript", "Font Awesome"],
+                notes: "Uses document.execCommand (deprecated); simplified file handling. No actual .docx/.pdf generation.",
+                author: "Sir Henry, Contact: hochieng86@gmail.com",
+                license: "© 2023 EaseNing Tools. All rights reserved."
+            }
+        };
+
+        // Toggle chat window visibility
+        function toggleChat() {
+            const chatContainer = document.querySelector('.chat-container');
+            chatContainer.style.display = chatContainer.style.display === 'none' ? 'flex' : 'none';
+        }
+
+        // Format timestamp
+        function getTimestamp() {
+            const now = new Date();
+            return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Add message to chat body
+        function addMessage(content, isUser = false) {
+            const chatBody = document.getElementById('chat-body');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            messageDiv.textContent = content;
+            const timestampDiv = document.createElement('div');
+            timestampDiv.className = 'timestamp';
+            timestampDiv.textContent = getTimestamp();
+            messageDiv.appendChild(timestampDiv);
+            chatBody.appendChild(messageDiv);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        // Process user input and find matching response
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const query = input.value.trim().toLowerCase();
+            if (!query) return;
+
+            // Add user message
+            addMessage(query, true);
+            input.value = '';
+
+            // Process query
+            const response = processQuery(query);
+            addMessage(response);
+        }
+
+        // Keyword-matching algorithm
+        function processQuery(query) {
+            const keywords = query.split(/\s+/);
+            let bestMatch = { score: 0, section: null, content: '' };
+
+            // Iterate through README sections
+            for (const section in readmeData) {
+                let score = 0;
+                const sectionData = readmeData[section];
+                const sectionText = JSON.stringify(sectionData).toLowerCase();
+
+                // Count keyword matches
+                keywords.forEach(keyword => {
+                    if (sectionText.includes(keyword)) {
+                        score += 1;
+                    }
+                });
+
+                // Boost score for exact section title matches
+                if (section.toLowerCase().includes(query) || query.includes(section.toLowerCase())) {
+                    score += 5;
+                }
+
+                // Update best match
+                if (score > bestMatch.score) {
+                    bestMatch = {
+                        score,
+                        section,
+                        content: generateResponse(sectionData, query)
+                    };
+                }
+            }
+
+            // Return response or default message
+            return bestMatch.score > 0 ? bestMatch.content : "Sorry, I couldn't find information related to your query. Try asking about specific tools like Web IDE, Excel, or contact details!";
+        }
+
+        // Generate response based on matched section
+        function generateResponse(sectionData, query) {
+            const lowerQuery = query.toLowerCase();
+            let response = '';
+
+            // Handle specific query types
+            if (lowerQuery.includes('contact') || lowerQuery.includes('email') || lowerQuery.includes('reach')) {
+                return `You can contact Sir Henry at hochieng86@gmail.com. The EaseNing Tools website also includes phone, WhatsApp, and location details in the Contact Section.`;
+            }
+
+            if (lowerQuery.includes('tools') || lowerQuery.includes('services') || lowerQuery.includes('available')) {
+                return `EaseNing Tools offers several development tools, including:\n- Code Preview Tool: Write and preview HTML, CSS, JavaScript.\n- Web IDE: Edit and run HTML, CSS, JavaScript, and Python.\n- Python Skills: Learn Python with interactive examples.\n- Web Terminal: Simulate Unix-like commands.\n- Excel - Spreadsheet: Browser-based spreadsheet tool.\n- Word - Professional Document Editor: Browser-based text editor.\nVisit https://hencheng2.github.io/all/ for more details.`;
+            }
+
+            // Generate response from section data
+            response = `${sectionData.overview}\n\nKey Features:\n${sectionData.features.map(f => `- ${f}`).join('\n')}`;
+            
+            // Add notes if relevant
+            if (sectionData.notes && (lowerQuery.includes('limit') || lowerQuery.includes('note') || lowerQuery.includes('constraint'))) {
+                response += `\n\nNotes: ${sectionData.notes}`;
+            }
+
+            // Add technologies if query asks about tech
+            if (lowerQuery.includes('tech') || lowerQuery.includes('technology') || lowerQuery.includes('built')) {
+                response += `\n\nTechnologies Used: ${sectionData.technologies.join(', ')}.`;
+            }
+
+            // Add setup instructions if query asks about usage
+            if (lowerQuery.includes('use') || lowerQuery.includes('setup') || lowerQuery.includes('run')) {
+                response += `\n\nSetup and Usage: Clone or download the index.html file, open it in a modern web browser, and ensure an internet connection for external CDNs like Font Awesome. Follow the usage instructions specific to the tool.`;
+            }
+
+            return response;
+        }
+
+        // Initialize with welcome message timestamp
+        document.querySelector('.timestamp').textContent = getTimestamp();
+    </script>
+</body>
+</html>
