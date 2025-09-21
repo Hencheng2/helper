@@ -38,6 +38,28 @@
             width: 100%;
             max-width: 800px;
             margin: 0 auto;
+            position: relative;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--dark-green);
+            color: var(--white);
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-bottom: 20px;
+            transition: background-color 0.3s;
+            border: 1px solid var(--light-green);
+        }
+
+        .back-button:hover {
+            background-color: var(--medium-green);
+        }
+
+        .back-button i {
+            margin-right: 8px;
         }
 
         header {
@@ -239,12 +261,6 @@
             h1 {
                 font-size: 2rem;
             }
-        }
-
-        @media (max-width: 480px) {
-            .chat-header h2 {
-                font-size: 1.2rem;
-            }
             
             .suggestions {
                 flex-direction: column;
@@ -255,10 +271,33 @@
                 text-align: center;
             }
         }
+
+        @media (max-width: 480px) {
+            .chat-header h2 {
+                font-size: 1.2rem;
+            }
+            
+            .back-button {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <a href="https://hencheng2.github.io/all/" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back to EaseNing Tools
+        </a>
+        
         <header>
             <h1>EaseNing Tools Assistant</h1>
             <p class="subtitle">How can I help you with our tools and services?</p>
